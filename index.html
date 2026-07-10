@@ -92,6 +92,26 @@
   .qty-control button:active { transform: scale(0.92); }
   .qty-control .qty { min-width: 14px; text-align: center; font-size: 0.9rem; color: #fff; font-weight: 600; }
 
+  /* Estilos para el input de plataforma personalizada */
+  .custom-input-group { display: flex; gap: 8px; margin-bottom: 10px; }
+  .custom-input {
+    flex: 1; background: var(--shell); border: 1px solid var(--shell-border);
+    color: #fff; padding: 8px 10px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; outline: none;
+  }
+  .custom-input:focus { border-color: var(--led); }
+  .custom-btn {
+    background: var(--key); color: #e7e9e1; border: none; padding: 0 12px;
+    border-radius: 6px; font-family: inherit; cursor: pointer; font-weight: 600;
+  }
+  .custom-btn:hover { background: var(--key-hi); }
+
+  /* Estilo Oferta del Día */
+  .checkbox-label {
+    display: flex; align-items: center; gap: 8px; color: #e7e9e1; font-size: 0.85rem; cursor: pointer;
+    background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--shell-border);
+  }
+  .checkbox-label:hover { background: rgba(255,255,255,0.04); }
+
   /* ---- Receipt column ---- */
   .receipt-column { display: flex; flex-direction: column; gap: 18px; }
   .receipt { position: relative; filter: drop-shadow(0 14px 24px rgba(0,0,0,0.45)); }
@@ -111,7 +131,7 @@
   .receipt-line .name { color: var(--ink); }
   .receipt-line .qty { color: var(--ink-soft); white-space: nowrap; }
   .receipt-empty { font-size: 0.78rem; color: var(--ink-soft); text-align: center; padding: 10px 0 4px; font-style: italic; }
-  .receipt-note { font-size: 0.66rem; color: var(--ink-soft); text-align: center; margin-top: 8px; letter-spacing: 0.02em; }
+  .receipt-note { font-size: 0.66rem; color: var(--ink-soft); text-align: center; margin-top: 8px; letter-spacing: 0.02em; font-weight: bold;}
   .receipt-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px; }
   .receipt-total-row span:first-child { font-size: 0.75rem; letter-spacing: 0.12em; color: var(--ink-soft); }
   #total-display { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.9rem; color: var(--accent-green); }
@@ -203,6 +223,26 @@
         <div class="tier-label">$15.000 c/u</div>
         <div id="tier-15"></div>
       </div>
+
+      <!-- Nueva Sección: Agregar Plataforma Personalizada -->
+      <div class="tier">
+        <div class="tier-label">Agregar Plataforma</div>
+        <div class="custom-input-group">
+          <input type="text" id="custom-platform-name" class="custom-input" placeholder="Ej: Crunchyroll Anual" onkeypress="handleCustomEnter(event)">
+          <button class="custom-btn" onclick="addCustomPlatform()">Agregar</button>
+        </div>
+        <div id="tier-custom"></div>
+      </div>
+
+      <!-- Nueva Sección: Oferta del día -->
+      <div class="tier">
+        <div class="tier-label">Oferta Especial</div>
+        <label class="checkbox-label">
+          <input type="checkbox" id="daily-offer-check" onchange="calcularTotal()">
+          Activar "Oferta del día" (Modificar precio)
+        </label>
+      </div>
+
     </section>
 
     <!-- Receipt + calculator -->
@@ -232,7 +272,7 @@
 
       <!-- Casilla Oculta del Administrador -->
       <div id="admin-override-container" class="admin-override-box hidden">
-        <label for="admin-price">⚠ LÍMITE EXCEDIDO. DIGITAR PRECIO AUTORIZADO:</label>
+        <label id="admin-override-label" for="admin-price">⚠ LÍMITE EXCEDIDO. DIGITAR PRECIO AUTORIZADO:</label>
         <input type="number" id="admin-price" placeholder="Ej: 45000" oninput="calcularTotal()">
       </div>
 
@@ -329,6 +369,63 @@
   buildTier('tier-11', '11');
   buildTier('tier-15', '15');
 
+  // ---- Lógica de Plataformas Personalizadas ----
+  let customPlatforms = [];
+
+  function handleCustomEnter(e) {
+    if (e.key === 'Enter') addCustomPlatform();
+  }
+
+  function addCustomPlatform() {
+    const input = document.getElementById('custom-platform-name');
+    const name = input.value.trim();
+    if (!name) return;
+
+    let existing = customPlatforms.find(p => p.name === name);
+    if (existing) {
+      existing.qty++;
+    } else {
+      customPlatforms.push({ name: name, qty: 1 });
+    }
+    input.value = '';
+    renderCustomPlatforms();
+    calcularTotal();
+  }
+
+  function updateCustomQty(name, change) {
+    let existing = customPlatforms.find(p => p.name === name);
+    if (existing) {
+      existing.qty += change;
+      if (existing.qty <= 0) {
+        customPlatforms = customPlatforms.filter(p => p.name !== name);
+      }
+    }
+    renderCustomPlatforms();
+    calcularTotal();
+  }
+
+  function renderCustomPlatforms() {
+    const container = document.getElementById('tier-custom');
+    container.innerHTML = '';
+    customPlatforms.forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'service-row active';
+      row.innerHTML = `
+        <div class="service-info">
+          <span class="service-name">${p.name}</span>
+          <span class="service-price">Requiere cotización</span>
+        </div>
+        <div class="qty-control">
+          <button onclick="updateCustomQty('${p.name}', -1)">-</button>
+          <span class="qty" style="color:#fff;">${p.qty}</span>
+          <button onclick="updateCustomQty('${p.name}', 1)">+</button>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  // ---- Funciones Base ----
   function updateQty(btn, change) {
     const qtySpan = btn.parentElement.querySelector('.qty');
     let qty = parseInt(qtySpan.innerText) + change;
@@ -345,12 +442,16 @@
     document.querySelectorAll('.qty').forEach(span => {
       span.innerText = '0';
     });
-    
     document.querySelectorAll('.service-row').forEach(row => {
       row.classList.remove('active');
     });
 
     document.getElementById('admin-price').value = '';
+    document.getElementById('daily-offer-check').checked = false;
+    document.getElementById('custom-platform-name').value = '';
+    
+    customPlatforms = [];
+    renderCustomPlatforms();
 
     calcularTotal();
   }
@@ -359,7 +460,8 @@
     let n10 = 0, n15 = 0, extras11 = 0;
     const lines = [];
 
-    document.querySelectorAll('.qty').forEach(span => {
+    // Recoger servicios normales
+    document.querySelectorAll('.qty[data-type]').forEach(span => {
       const qty = parseInt(span.innerText);
       const type = span.getAttribute('data-type');
       const name = span.getAttribute('data-name');
@@ -371,11 +473,17 @@
       }
     });
 
+    // Añadir servicios personalizados a la factura
+    customPlatforms.forEach(p => {
+      lines.push({ name: p.name, qty: p.qty });
+    });
+
     const linesEl = document.getElementById('receipt-lines');
     const totalEl = document.getElementById('total-display');
     const adminEl = document.getElementById('admin-stamp');
     const noteEl = document.getElementById('receipt-note');
     const adminBox = document.getElementById('admin-override-container');
+    const adminLabel = document.getElementById('admin-override-label');
     const adminInput = document.getElementById('admin-price');
 
     if (lines.length === 0) {
@@ -405,19 +513,47 @@
     }
     calculatedTotal += extras11 * 1000;
 
-    if (n10 > 5 || n15 >= 4 || calculatedTotal > 40000) {
+    // Lógicas para activar el bloque del administrador
+    const hasCustom = customPlatforms.length > 0;
+    const hasDailyOffer = document.getElementById('daily-offer-check').checked;
+    const isLimitExceeded = (n10 > 5 || n15 >= 4 || calculatedTotal > 40000);
+
+    if (isLimitExceeded || hasCustom || hasDailyOffer) {
       adminBox.classList.remove('hidden');
+
+      // Modificar el texto del input dependiendo de por qué se activó
+      if (hasCustom) {
+        adminLabel.textContent = "⚠ PLATAFORMA NUEVA. DIGITAR PRECIO DEL COMBO:";
+      } else if (hasDailyOffer) {
+        adminLabel.textContent = "🎁 OFERTA DEL DÍA. DIGITAR PRECIO A COBRAR:";
+      } else {
+        adminLabel.textContent = "⚠ LÍMITE EXCEDIDO. DIGITAR PRECIO AUTORIZADO:";
+      }
 
       if (adminInput.value && adminInput.value !== '') {
         let finalTotal = parseInt(adminInput.value);
         adminEl.classList.add('hidden');
         totalEl.parentElement.style.visibility = 'visible';
         totalEl.textContent = '$' + finalTotal.toLocaleString('es-CO');
-        noteEl.textContent = 'Precio especial autorizado por administrador';
+        
+        if (hasCustom) {
+            noteEl.textContent = 'El admin genera la factura (Sujeto a cotización)';
+        } else if (hasDailyOffer) {
+            noteEl.textContent = 'Oferta del día aplicada';
+        } else {
+            noteEl.textContent = 'Precio especial autorizado por administrador';
+        }
       } else {
         totalEl.parentElement.style.visibility = 'hidden';
         noteEl.textContent = '';
         adminEl.classList.remove('hidden');
+        
+        // El sello de advertencia en la factura refleja el motivo
+        if (hasCustom) {
+            adminEl.textContent = '⚠ EL ADMIN GENERA LA FACTURA';
+        } else {
+            adminEl.textContent = '⚠ CONSULTAR ADMINISTRADOR';
+        }
       }
     } else {
       adminBox.classList.add('hidden');
@@ -472,6 +608,7 @@
     }
   }
 
+  // ---- Calculadora ----
   let currentCalc = '0';
   const calcScreen = document.getElementById('calc-screen');
 
