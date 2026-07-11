@@ -40,11 +40,11 @@
   }
   
   /* Máximo ancho ampliado para ocupar bien la pantalla */
-  .machine { width: 100%; max-width: 1350px; }
+  .machine { width: 100%; max-width: 1350px; display: flex; flex-direction: column; gap: 32px; }
   
   .chassis-header {
     display: flex; align-items: baseline; justify-content: space-between;
-    padding: 0 4px 20px; color: #cfd3c9; flex-wrap: wrap; gap: 6px;
+    padding: 0 4px; color: #cfd3c9; flex-wrap: wrap; gap: 6px;
   }
   .brand {
     font-family: 'Space Grotesk', sans-serif; font-weight: 700;
@@ -177,9 +177,8 @@
     padding: 12px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 1.1rem; outline: none;
   }
 
-  /* Grupo de botones ajustado para acomodar 3 botones */
+  /* Grupo de botones */
   .btn-group { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; }
-  
   .action-btn {
     flex: 1; min-width: 110px; background: var(--led); color: var(--ink); border: none; padding: 12px 10px;
     border-radius: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.95rem;
@@ -189,10 +188,7 @@
   .action-btn:active { transform: scale(0.98); }
   .action-btn.copied { background: #3498db; color: #fff; }
   
-  .clear-btn {
-    background: transparent; border: 1px solid var(--shell-border);
-    color: #cfd3c9;
-  }
+  .clear-btn { background: transparent; border: 1px solid var(--shell-border); color: #cfd3c9; }
   .clear-btn:hover { background: rgba(255,255,255,0.05); color: #fff; filter: none; }
 
   /* ---- Calculator widget ---- */
@@ -215,7 +211,20 @@
   .calc-btn.clear { background: var(--accent-red); color: #1a0c08; grid-column: span 2; }
   .calc-btn.equal { background: var(--accent-green); color: #062015; grid-column: span 2; }
 
-  /* ---- ADAPTACIÓN A PANTALLAS MENORES (Móviles / Tablets) ---- */
+  /* ---- NUEVO: PANEL DE CONFIGURACIÓN INFERIOR ---- */
+  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .setting-group { display: flex; flex-direction: column; gap: 10px; }
+  .setting-label { font-size: 0.75rem; color: #7c8375; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  
+  .custom-select {
+    background: var(--shell) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23cfd3c9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 14px center;
+    border: 1px solid var(--shell-border); color: #fff; padding: 12px 16px; border-radius: 8px; font-family: inherit; font-size: 0.95rem;
+    outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;
+  }
+  .custom-select:focus { border-color: var(--led); }
+  .custom-select option { background: var(--shell-raised); color: #fff; }
+
+  /* ---- ADAPTACIÓN A PANTALLAS MENORES ---- */
   @media (max-width: 950px) {
     .deck {
       grid-template-columns: 1fr;
@@ -225,6 +234,7 @@
         "calc";
       gap: 20px;
     }
+    .settings-grid { grid-template-columns: 1fr; gap: 16px; }
   }
 </style>
 </head>
@@ -260,7 +270,6 @@
       <div class="tier">
         <div class="tier-label">Agregar Plataforma</div>
         <div class="custom-input-group">
-          <!-- Placeholder modificado a 30 Días -->
           <input type="text" id="custom-platform-name" class="custom-input" placeholder="Ej: Crunchyroll 30 Días" onkeypress="handleCustomEnter(event)">
           <button class="custom-btn" onclick="addCustomPlatform()">Agregar</button>
         </div>
@@ -296,7 +305,7 @@
           <div class="receipt-note" id="receipt-note"></div>
           <div class="admin-stamp hidden" id="admin-stamp">⚠ CONSULTAR ADMINISTRADOR</div>
           
-          <div class="receipt-hours">Horario de atención: 10 am a 8 pm</div>
+          <div class="receipt-hours" id="receipt-hours-display">Horario de atención: 10 am a 8 pm</div>
         </div>
         <div class="torn bottom"></div>
       </div>
@@ -367,6 +376,35 @@
     </aside>
 
   </div>
+
+  <!-- SECCIÓN DE CONFIGURACIÓN (NUEVA) -->
+  <section class="panel">
+    <h2>Configuración <span class="eyebrow">sistema</span></h2>
+    <div class="settings-grid">
+      
+      <!-- Selector de Horario -->
+      <div class="setting-group">
+        <label class="setting-label">Horario de Atención (Aparece en factura)</label>
+        <select id="schedule-select" class="custom-select" onchange="actualizarHorario()">
+          <option value="10 am a 8 pm">10 am a 8 pm</option>
+          <option value="11 am a 9 pm">11 am a 9 pm</option>
+        </select>
+      </div>
+
+      <!-- Selector de Formato de Texto -->
+      <div class="setting-group">
+        <label class="setting-label">Estilo de Texto (Al presionar "Copiar Texto SMS")</label>
+        <select id="sms-format" class="custom-select">
+          <option value="standard">Estándar (Con viñetas y emojis)</option>
+          <option value="minimal">Minimalista (Sin adornos, directo)</option>
+          <option value="aesthetic">Aesthetic / Elegante (Letra cursiva)</option>
+          <option value="ticket">Ticket POS (Estilo impresora térmica)</option>
+        </select>
+      </div>
+
+    </div>
+  </section>
+
 </div>
 
 <script>
@@ -411,6 +449,12 @@
   buildTier('tier-10', '10');
   buildTier('tier-11', '11');
   buildTier('tier-15', '15');
+
+  // ---- Actualizar Horario en Vivo ----
+  function actualizarHorario() {
+    const horario = document.getElementById('schedule-select').value;
+    document.getElementById('receipt-hours-display').innerText = `Horario de atención: ${horario}`;
+  }
 
   // ---- Lógica de Plataformas Personalizadas ----
   let customPlatforms = [];
@@ -650,7 +694,7 @@
     }
   }
 
-  // ---- Función Copiar Texto (SMS/WHATSAPP) - FORMATO COMPACTO ----
+  // ---- Función Copiar Texto Multi-Estilo ----
   async function copiarTexto() {
     const btn = document.getElementById('copy-txt-btn');
     const originalText = btn.innerHTML;
@@ -660,37 +704,68 @@
         return;
     }
 
-    // Armar el mensaje de texto imitando la estructura, sin espacios en blanco adicionales
-    let textoTicket = "🧾 *COMBO STREAMING*\n--- Recibo de Servicios ---\n";
-
-    // Recoger los ítems
-    document.querySelectorAll('.qty[data-type]').forEach(span => {
-      const qty = parseInt(span.innerText);
-      if (qty > 0) {
-        const name = span.getAttribute('data-name');
-        textoTicket += `👉 ${qty}x ${name}\n`;
-      }
-    });
-
-    customPlatforms.forEach(p => {
-      textoTicket += `👉 ${p.qty}x ${p.name}\n`;
-    });
-
-    textoTicket += "-------------------------\n";
-    textoTicket += `*TOTAL:* ${document.getElementById('total-display').textContent}\n`;
-    textoTicket += "-------------------------\n";
-
-    // Si hay una nota de descuento, admin u oferta
+    // Recopilar datos base
+    const total = document.getElementById('total-display').textContent;
+    const schedule = document.getElementById('schedule-select').value;
+    const format = document.getElementById('sms-format').value;
     const noteEl = document.getElementById('receipt-note').textContent;
     const adminStamp = document.getElementById('admin-stamp');
     
+    let customNote = "";
     if (!adminStamp.classList.contains('hidden')) {
-        textoTicket += `⚠ ${adminStamp.textContent}\n`;
+        customNote = `⚠ ${adminStamp.textContent}`;
     } else if (noteEl !== '') {
-        textoTicket += `*${noteEl}*\n`;
+        customNote = `*${noteEl}*`;
     }
 
-    textoTicket += "⏳ _Horario de atención: 10 am a 8 pm_";
+    // Extraer ítems a un array
+    let itemsText = [];
+    document.querySelectorAll('.qty[data-type]').forEach(span => {
+      const qty = parseInt(span.innerText);
+      if (qty > 0) itemsText.push({ qty, name: span.getAttribute('data-name') });
+    });
+    customPlatforms.forEach(p => itemsText.push({ qty: p.qty, name: p.name }));
+
+    // Generar texto según el formato elegido
+    let textoTicket = "";
+
+    if (format === 'standard') {
+        textoTicket += "🧾 *COMBO STREAMING*\n--- Recibo de Servicios ---\n";
+        itemsText.forEach(i => textoTicket += `👉 ${i.qty}x ${i.name}\n`);
+        textoTicket += "-------------------------\n";
+        textoTicket += `*TOTAL:* ${total}\n`;
+        textoTicket += "-------------------------\n";
+        if (customNote) textoTicket += `${customNote}\n`;
+        textoTicket += `⏳ _Horario de atención: ${schedule}_`;
+
+    } else if (format === 'minimal') {
+        textoTicket += "COMBO STREAMING\n\n";
+        itemsText.forEach(i => textoTicket += `${i.qty}x ${i.name}\n`);
+        textoTicket += `\nTOTAL: ${total}\n`;
+        if (customNote) textoTicket += `${customNote.replace(/[\*⚠]/g, '')}\n`;
+        textoTicket += `Horario: ${schedule}`;
+
+    } else if (format === 'aesthetic') {
+        textoTicket += "✨ 𝓒𝓸𝓶𝓫𝓸 𝓢𝓽𝓻𝓮𝓪𝓶𝓲𝓷𝓰 ✨\n";
+        textoTicket += "════════════════════\n";
+        itemsText.forEach(i => textoTicket += `⪼ ${i.qty}x ${i.name}\n`);
+        textoTicket += "════════════════════\n";
+        textoTicket += `💳 𝓣𝓸𝓽𝓪𝓵: ${total}\n`;
+        if (customNote) textoTicket += `⋆ ${customNote.replace(/[\*⚠]/g, '')} ⋆\n`;
+        textoTicket += `🕒 𝓗𝓸𝓻𝓪𝓻𝓲𝓸: ${schedule}`;
+
+    } else if (format === 'ticket') {
+        textoTicket += "+-----------------------+\n";
+        textoTicket += "|    COMBO STREAMING    |\n";
+        textoTicket += "+-----------------------+\n";
+        itemsText.forEach(i => textoTicket += ` ${i.qty}x ${i.name}\n`);
+        textoTicket += "-------------------------\n";
+        textoTicket += ` TOTAL:          ${total}\n`;
+        textoTicket += "-------------------------\n";
+        if (customNote) textoTicket += ` ${customNote.replace(/[\*]/g, '')}\n`;
+        textoTicket += ` [Horario: ${schedule}]\n`;
+        textoTicket += "+-----------------------+";
+    }
 
     // Intentar copiar al portapapeles
     try {
