@@ -483,7 +483,10 @@
         let itemsStr = parts.length >= 4 ? parts[3] : parts[2];
         
         st = new Date(new Date(2024,0,1).getTime() + parseInt(startB36, 36) * 86400000);
-        end = new Date(st); end.setDate(end.getDate() + parseInt(endB36, 36) * 86400000);
+        
+        // CORRECCIÓN APLICADA AQUÍ: Ya no se suman los milisegundos a la fecha actual,
+        // se suma directamente desde la misma base del 1 de enero de 2024.
+        end = new Date(new Date(2024,0,1).getTime() + parseInt(endB36, 36) * 86400000);
         
         if (itemsStr) {
           for(let tok of itemsStr.split('-')) {
