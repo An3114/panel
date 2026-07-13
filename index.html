@@ -26,60 +26,60 @@
   }
   .machine { width: 100%; max-width: 1400px; display: flex; flex-direction: column; gap: 32px; }
 
+  /* CABECERA */
   .chassis-header { display: flex; align-items: baseline; justify-content: space-between; padding: 0 4px; color: #cfd3c9; flex-wrap: wrap; gap: 6px; }
   .brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.4rem; display: flex; align-items: center; gap: 12px; }
   .brand-led { width: 10px; height: 10px; border-radius: 50%; background: var(--led); box-shadow: 0 0 10px var(--led); }
   .chassis-sub { font-size: 0.85rem; color: #7c8375; letter-spacing: 0.03em; }
 
+  /* ESTRUCTURA PRINCIPAL */
   .deck { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-areas: "panel receipt" "panel calc"; gap: 32px; align-items: start; }
   .panel-col { grid-area: panel; } .receipt-col { grid-area: receipt; display: flex; flex-direction: column; gap: 20px; } .calc-col { grid-area: calc; display: flex; flex-direction: column; gap: 20px; }
-
   .panel, .calc-widget { background: var(--shell-raised); border: 1px solid var(--shell-border); border-radius: 16px; padding: 26px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
   .panel > h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; color: #e7e9e1; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: baseline; }
   .panel > h2 .eyebrow { font-size: 0.72rem; color: var(--led); text-transform: uppercase; letter-spacing: 0.1em; }
 
-  /* Tabs & Controls */
+  /* NAVEGACIÓN PESTAÑAS */
   .tab-nav { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; border-bottom: 1px solid var(--shell-border); padding-bottom: 14px; }
   .tab-btn { background: transparent; border: 1px solid var(--shell-border); color: #9aa192; padding: 8px 14px; border-radius: 8px; font-family: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
   .tab-btn:hover { color: #e7e9e1; } .tab-btn.active { background: rgba(62,224,138,0.1); border-color: var(--led); color: var(--led); }
   .tab-pane { display: none; } .tab-pane.active { display: block; animation: fadeIn 0.2s; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+  /* LISTAS Y CONTROLES */
   .tier + .tier { margin-top: 20px; }
   .tier-label { font-size: 0.75rem; text-transform: uppercase; color: #7c8375; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; font-weight: 600; }
   .tier-label::after { content: ''; flex: 1; height: 1px; background: var(--shell-border); }
-
   .service-row { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border: 1px solid transparent; border-radius: 9px; padding: 9px 12px; margin-bottom: 6px; transition: 0.2s; }
   .service-row.active { border-color: rgba(62,224,138,0.35); background: rgba(62,224,138,0.06); }
   .service-name { font-size: 0.9rem; color: #e7e9e1; font-weight: 500; display: block; }
   .service-price { font-size: 0.75rem; color: #7c8375; }
-
   .qty-control { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.25); border-radius: 7px; padding: 4px 6px; }
   .qty-control button { background: var(--key); color: #e7e9e1; border: none; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 1.2rem; }
   .qty-control button:active { transform: scale(0.92); } .qty-control .qty { min-width: 18px; text-align: center; color: #fff; font-weight: 600; }
 
+  /* INPUTS Y BOTONES */
   .custom-input-group { display: flex; gap: 10px; margin-bottom: 10px; }
   .custom-input { flex: 1; background: var(--shell); border: 1px solid var(--shell-border); color: #fff; padding: 10px 14px; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.2s; }
   .custom-input:focus { border-color: var(--led); }
   .custom-btn { background: var(--key); color: #e7e9e1; border: none; padding: 0 16px; border-radius: 8px; font-family: inherit; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
   .custom-btn.wide { width: 100%; padding: 12px; } .custom-btn.blue { background: var(--accent-blue); color: #06213b; }
-
   .radio-group { display: flex; flex-direction: column; gap: 8px; }
   .radio-label { display: flex; align-items: center; gap: 10px; color: #e7e9e1; font-size: 0.85rem; cursor: pointer; background: rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--shell-border); }
   .radio-label:has(input:checked) { border-color: var(--led); background: rgba(62,224,138,0.08); }
   input[type="radio"], input[type="checkbox"] { accent-color: var(--led); width: 16px; height: 16px; cursor: pointer; }
-
   .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .chip { background: rgba(62,224,138,0.08); border: 1px solid rgba(62,224,138,0.35); color: #e7e9e1; padding: 8px 10px 8px 14px; border-radius: 20px; font-size: 0.82rem; display: flex; align-items: center; gap: 8px; }
   .chip .chip-qty { color: var(--led); font-weight: 700; } .chip button { background: rgba(255,255,255,0.08); border: none; color: #e7e9e1; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; }
 
+  /* HERRAMIENTAS Y DECODIFICADOR */
   .tool-block { margin-bottom: 22px; } .tool-title { font-size: 0.85rem; color: #e7e9e1; font-weight: 600; margin-bottom: 8px; }
   .tool-desc { font-size: 0.75rem; color: #7c8375; margin-bottom: 10px; }
   .tool-output { background: var(--shell); border: 1px solid var(--shell-border); border-radius: 8px; padding: 12px 14px; font-size: 0.82rem; color: #cfd3c9; white-space: pre-wrap; margin-top: 10px; min-height: 20px; }
   .file-drop-area { border: 2px dashed var(--shell-border); background: rgba(0,0,0,0.1); border-radius: 8px; padding: 20px; text-align: center; color: #7c8375; font-size: 0.85rem; cursor: pointer; margin-top: 10px; }
   .file-drop-area.dragover { border-color: var(--led); background: rgba(62,224,138,0.05); color: var(--led); }
 
-  /* ---- Receipt ---- */
+  /* FACTURA (RECEIPT) */
   .mode-toggle { display: flex; background: var(--shell-raised); border: 1px solid var(--shell-border); border-radius: 12px; padding: 6px; gap: 6px; flex-wrap: wrap; }
   .mode-btn { flex: 1; background: transparent; border: none; color: #9aa192; padding: 10px 4px; border-radius: 8px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s; min-width: 100px; }
   .mode-btn.active[data-mode="cotizacion"] { background: rgba(255,255,255,0.1); color: #fff; }
@@ -113,7 +113,7 @@
   .action-btn:hover { filter: brightness(1.1); } .action-btn.copied { background: #3498db; color: #fff; }
   .clear-btn { background: transparent; border: 1px solid var(--shell-border); color: #cfd3c9; }
 
-  /* Calc & Utils */
+  /* CALCULADORA Y FECHAS */
   .calc-screen { background: #0e0f13; border: 1px solid var(--shell-border); border-radius: 10px; color: var(--led); font-size: 2rem; text-align: right; padding: 16px 20px; margin-bottom: 16px; overflow: hidden; }
   .calc-keys { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
   .calc-btn { background: var(--key); color: #e7e9e1; border: none; font-family: inherit; font-size: 1.25rem; font-weight: 600; padding: 18px 0; border-radius: 8px; cursor: pointer; }
@@ -197,10 +197,10 @@
         </div>
 
         <div class="tool-block" style="border-top: 1px solid var(--shell-border); padding-top: 20px; margin-top: 20px;">
-          <div class="tool-title">🔍 Decodificador de Referencias</div>
-          <div class="tool-desc">Sube, pega (Ctrl+V) una imagen o escribe el código corto. Verifica fechas y si el pago fue validado.</div>
+          <div class="tool-title">🔍 Decodificador Inteligente (Nuevos y Antiguos)</div>
+          <div class="tool-desc">Lee códigos nuevos cortos y códigos viejos largos. Sube la imagen, pega (Ctrl+V) o escribe manual.</div>
           <div class="custom-input-group">
-            <input type="text" id="ref-decode-input" class="custom-input" placeholder="Ej: REF-9S3X4DEGHI">
+            <input type="text" id="ref-decode-input" class="custom-input" placeholder="Ej: REF-9S3X... ó 1I323H...">
             <button class="custom-btn blue" onclick="decodificarReferencia()">Decodificar</button>
           </div>
           <div class="file-drop-area" id="ref-drop-area">
@@ -309,7 +309,7 @@
 </div>
 
 <script>
-  /* ================= TABS ================= */
+  /* ================= PESTAÑAS E INTERFAZ ================= */
   function switchTab(btn, tabId) {
     const nav = btn.closest('.tab-nav');
     nav.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
@@ -318,7 +318,7 @@
     const pane = container.querySelector('#tab-' + tabId); if (pane) pane.classList.add('active');
   }
 
-  /* ================= SERVICIOS ================= */
+  /* ================= CATÁLOGO DE SERVICIOS ================= */
   const SERVICES = {
     "10": [{name:"Disney (1 Pantalla) 30 Días",p:10000},{name:"Prime Video (1 Pantalla) 30 Días",p:10000},{name:"ViX (1 Pantalla) 30 Días",p:10000},{name:"Crunchyroll (1 Pantalla) 30 Días",p:10000},{name:"HBO Max (1 Pantalla) 30 Días",p:10000}],
     "11": [{name:"Spotify (1 Cuenta) 30 Días",p:11000},{name:"YouTube Premium (1 Cuenta) 30 Días",p:11000}],
@@ -355,12 +355,13 @@
     const s = btn.parentElement.querySelector('.qty'); let q = parseInt(s.innerText) + change;
     if (q < 0) q = 0; s.innerText = q; btn.closest('.service-row').classList.toggle('active', q > 0); calcularTotal();
   }
+  
   function limpiarTodo() {
     document.querySelectorAll('.qty').forEach(s => s.innerText = '0'); document.querySelectorAll('.service-row').forEach(r => r.classList.remove('active'));
     document.getElementById('admin-price').value = ''; customPlatforms = []; renderCustom(); document.querySelector('input[name="price-mod"][value="none"]').checked = true; setInvoiceMode('cotizacion', document.querySelector('.mode-btn'));
   }
 
-  /* ================= FACTURACIÓN Y LÓGICA ================= */
+  /* ================= FACTURACIÓN Y LÓGICA DE PRECIOS ================= */
   let invoiceMode = 'cotizacion';
   function setInvoiceMode(m, btn) { invoiceMode = m; document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); calcularTotal(); }
 
@@ -374,13 +375,11 @@
 
     document.getElementById('receipt-lines').innerHTML = lines.length ? lines.map(l => `<div class="receipt-line"><span class="name">${l.name}</span><span class="qty">x${l.qty}</span></div>`).join('') : '<div class="receipt-empty">Selecciona servicios</div>';
     
-    // Títulos según modo
     const tEl = document.getElementById('receipt-title'), sEl = document.getElementById('receipt-sub'), lEl = document.getElementById('total-label');
     if (invoiceMode === 'pagado') { tEl.textContent='RECIBO DE PAGO'; sEl.textContent='PAGO CONFIRMADO'; lEl.textContent='TOTAL PAGADO'; document.getElementById('total-display').style.color="var(--accent-green)"; }
     else if (invoiceMode === 'validando') { tEl.textContent='ORDEN ENTREGADA'; sEl.textContent='VALIDANDO PAGO'; lEl.textContent='TOTAL A PAGAR'; document.getElementById('total-display').style.color="var(--accent-yellow)"; }
     else { tEl.textContent='SERVICIOS STREAMING'; sEl.textContent='ORDEN DE PAGO'; lEl.textContent='TOTAL A PAGAR'; document.getElementById('total-display').style.color="var(--ink)"; }
 
-    // Precios automáticos (combos)
     let cTot = 0;
     if (n15 === 0) cTot = [0,10000,15000,19000,24000,28000][n10]??0;
     else if (n15 === 1) cTot = [15000,20000,24000,28000][n10] || (28000+(n10-3)*10000);
@@ -400,74 +399,120 @@
     document.getElementById('admin-stamp').classList.toggle('hidden', !showSt);
     document.getElementById('total-display').textContent = (cTot===0 && !aInp.value && tSel>0) ? '$0' : '$'+cTot.toLocaleString('es-CO');
 
-    // Banner y Código (Solo si validando o pagado)
     const banner = document.getElementById('paid-banner');
     if ((invoiceMode === 'pagado' || invoiceMode === 'validando') && tSel > 0) {
       banner.classList.remove('hidden');
       const stat = invoiceMode === 'pagado' ? '1' : '0';
-      const ref = generarCodigoRef(lines, 30, stat);
+      const ref = generarCodigoRef(lines, 30, stat); // Generador nuevo (corto y único)
       if (invoiceMode === 'pagado') {
         banner.className = 'paid-banner pagado';
         banner.innerHTML = `✅ Estado: PAGADO — ¡Gracias!<div class="ref-code-box">REF-${ref}</div>`;
       } else {
         banner.className = 'paid-banner validando';
-        banner.innerHTML = `⏳ Estado: VALIDANDO PAGO — Servicio entregado<div class="ref-code-box">REF-${ref}</div>`;
+        banner.innerHTML = `⏳ Estado: VALIDANDO PAGO — Entregado<div class="ref-code-box">REF-${ref}</div>`;
       }
     } else { banner.classList.add('hidden'); }
   }
 
-  /* ================= CÓDIGO DE REFERENCIA OPTIMIZADO (COMPRESIÓN) ================= */
+  /* ================= DECODIFICADOR Y CRIPTOGRAFÍA (NUEVA Y ANTIGUA) ================= */
+  // Alfabeto base y llave para V2
   const ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const REF_KEY = [5, 12, 3, 7]; // Desplazamiento criptográfico
-  const I_CODES = {"Disney (1 Pantalla) 30 Días":"A", "Prime Video (1 Pantalla) 30 Días":"B", "ViX (1 Pantalla) 30 Días":"C", "Crunchyroll (1 Pantalla) 30 Días":"D", "HBO Max (1 Pantalla) 30 Días":"E", "Spotify (1 Cuenta) 30 Días":"F", "YouTube Premium (1 Cuenta) 30 Días":"G", "Netflix (1 Pantalla) 30 Días":"H", "Disney+ ESPN (1 Pantalla) 30 Días":"I", "Paramount+ (1 Pantalla) 30 Días":"J"};
+  const REF_KEY_V2 = [5, 12, 3, 7]; 
   
-  function getIName(c) { return Object.keys(I_CODES).find(k => I_CODES[k] === c) || 'Servicio Externo'; }
+  // Diccionarios V2 (Nuevos - Letra simple) y V1 (Antiguos - Letra doble)
+  const I_CODES_V2 = {"Disney (1 Pantalla) 30 Días":"A", "Prime Video (1 Pantalla) 30 Días":"B", "ViX (1 Pantalla) 30 Días":"C", "Crunchyroll (1 Pantalla) 30 Días":"D", "HBO Max (1 Pantalla) 30 Días":"E", "Spotify (1 Cuenta) 30 Días":"F", "YouTube Premium (1 Cuenta) 30 Días":"G", "Netflix (1 Pantalla) 30 Días":"H", "Disney+ ESPN (1 Pantalla) 30 Días":"I", "Paramount+ (1 Pantalla) 30 Días":"J"};
+  const I_CODES_V1 = {"Disney (1 Pantalla) 30 Días":"DN", "Prime Video (1 Pantalla) 30 Días":"PV", "ViX (1 Pantalla) 30 Días":"VX", "Crunchyroll (1 Pantalla) 30 Días":"CR", "HBO Max (1 Pantalla) 30 Días":"HM", "Spotify (1 Cuenta) 30 Días":"SP", "YouTube Premium (1 Cuenta) 30 Días":"YT", "Netflix (1 Pantalla) 30 Días":"NF", "Disney+ ESPN (1 Pantalla) 30 Días":"DE", "Paramount+ (1 Pantalla) 30 Días":"PM"};
+  const REF_KEY_V1 = [7, 13, 3, 19, 11]; // Llave original para códigos gigantes
+  
+  function getIName(c, isLegacy) { 
+    let dict = isLegacy ? I_CODES_V1 : I_CODES_V2;
+    return Object.keys(dict).find(k => dict[k] === c) || 'Servicio Externo'; 
+  }
+
   function shiftStr(s, decode=false) {
     let r=''; for(let i=0; i<s.length; i++) {
       let x=ALPHABET.indexOf(s[i].toUpperCase());
-      if(x===-1) r+=s[i]; else r+=ALPHABET[(x + (decode? -REF_KEY[i%4]+36 : REF_KEY[i%4])) % 36];
+      if(x===-1) r+=s[i]; else r+=ALPHABET[(x + (decode? -REF_KEY_V2[i%4]+36 : REF_KEY_V2[i%4])) % 36];
     } return r;
   }
 
-  // Estructura corta: salt(1) - epochBase36 - vigencia - status(1=pag, 0=val) - items(ej: A2BC)
+  // Genera Códigos Nuevos (CORTOS Y ÚNICOS SIEMPRE)
   function generarCodigoRef(lines, dias, status) {
     let start = new Date(); start.setHours(0,0,0,0);
-    let salt = ALPHABET[Math.floor(Math.random()*36)];
-    let itStr = lines.map(l => (l.qty>1?l.qty:'') + (I_CODES[l.name]||'X')).join('');
+    // 2 Letras random de Salt garantizan que el código NO se repita nunca, ni en el mismo segundo.
+    let salt = ALPHABET[Math.floor(Math.random()*36)] + ALPHABET[Math.floor(Math.random()*36)];
+    let itStr = lines.map(l => (l.qty>1?l.qty:'') + (I_CODES_V2[l.name]||'X')).join('');
     let ep = Math.round((start-new Date(2024,0,1))/86400000).toString(36);
     let raw = `${salt}-${ep}-${dias.toString(36).toUpperCase()}-${status}-${itStr}`;
-    return shiftStr(raw);
+    return shiftStr(raw); // Ejemplo corto: 9D-1B-Y-1-HBA
   }
 
   let lastRef = null;
   function decodificarReferencia() {
-    let input = document.getElementById('ref-decode-input').value.toUpperCase().replace(/^REF-/, '');
+    let input = document.getElementById('ref-decode-input').value.toUpperCase().replace(/^REF-/, '').trim();
     const out = document.getElementById('ref-decode-output'), btn = document.getElementById('copy-ref-msg-btn');
     if(!input) { out.textContent = "Pega un código arriba o escanea factura."; return; }
+    
     try {
-      let raw = shiftStr(input, true); let p = raw.split('-'); // p[1]=epoch, p[2]=dias, p[3]=status, p[4]=items
-      let st = new Date(new Date(2024,0,1).getTime() + parseInt(p[1],36)*86400000);
-      let end = new Date(st); end.setDate(end.getDate() + parseInt(p[2],36));
-      let items = []; for(const m of p[4].matchAll(/(\d*)([A-Z])/g)) items.push({name: getIName(m[2]), qty: m[1]?parseInt(m[1]):1});
+      let items = [], st, end, pStat = "1", esAntiguo = false;
+
+      // DETECCIÓN: Si tiene guiones (-) es el código nuevo corto. Si no, es el código gigante antiguo.
+      if (input.includes('-')) {
+        /* ----- DECODIFICADOR NUEVO (V2) ----- */
+        let raw = shiftStr(input, true); 
+        let p = raw.split('-'); // p[0]=salt, p[1]=epoch, p[2]=dias, p[3]=status, p[4]=items
+        if(p.length < 5) throw new Error();
+        st = new Date(new Date(2024,0,1).getTime() + parseInt(p[1],36)*86400000);
+        end = new Date(st); end.setDate(end.getDate() + parseInt(p[2],36));
+        pStat = p[3];
+        for(const m of p[4].matchAll(/(\d*)([A-Z])/g)) items.push({name: getIName(m[2], false), qty: m[1]?parseInt(m[1]):1});
+      } 
+      else {
+        /* ----- DECODIFICADOR LEGACY (V1) - Soporte Códigos Gigantes ----- */
+        esAntiguo = true;
+        const clean = input.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if(clean.length % 2 !== 0) throw new Error();
+        let payload = '';
+        for (let i = 0; i < clean.length; i += 2) {
+          const code = parseInt(clean.substr(i, 2), 36) ^ REF_KEY_V1[(i / 2) % REF_KEY_V1.length];
+          payload += String.fromCharCode(code);
+        }
+        const parts = payload.split('~'); // Puede traer salt o no, buscamos fechas al final
+        let startB36 = parts.length >= 4 ? parts[1] : parts[0];
+        let endB36 = parts.length >= 4 ? parts[2] : parts[1];
+        let itemsStr = parts.length >= 4 ? parts[3] : parts[2];
+        
+        st = new Date(new Date(2024,0,1).getTime() + parseInt(startB36, 36) * 86400000);
+        end = new Date(st); end.setDate(end.getDate() + parseInt(endB36, 36) * 86400000);
+        
+        if (itemsStr) {
+          for(let tok of itemsStr.split('-')) {
+            if(!tok) continue;
+            let c = tok.slice(0, 2).toUpperCase(), q = tok.slice(2) || '1';
+            items.push({name: getIName(c, true), qty: parseInt(q)});
+          }
+        }
+      }
       
-      let isVen = end < new Date();
-      let statMsg = p[3]==="1" ? "✅ PAGO CONFIRMADO" : "⏳ PENDIENTE (Validando pago)";
+      let isVen = end < new Date(new Date().setHours(0,0,0,0));
+      let statMsg = pStat==="1" ? "✅ CONFIRMADO" : "⏳ PENDIENTE (Pago no verificado)";
+      let warning = esAntiguo ? "\nℹ (Formato Antiguo Compatible)" : "";
       
-      out.textContent = `Servicios: ${items.map(i=>`${i.name}(x${i.qty})`).join(', ')}\nInició: ${st.toLocaleDateString('es-CO')}\nVence: ${end.toLocaleDateString('es-CO')}\n${isVen?'⚠ VENCIDO':'✅ VIGENTE'}\n${statMsg}`;
-      lastRef = { items, isVen, st:st.toLocaleDateString('es-CO'), end:end.toLocaleDateString('es-CO'), pStat: p[3] };
+      out.textContent = `Servicios: ${items.map(i=>`${i.name}(x${i.qty})`).join(', ')}\nInició: ${st.toLocaleDateString('es-CO')}\nVence: ${end.toLocaleDateString('es-CO')}\n${isVen?'⚠ VENCIDO':'✅ VIGENTE'}\nEstado Pago: ${statMsg}${warning}`;
+      lastRef = { items, isVen, st:st.toLocaleDateString('es-CO'), end:end.toLocaleDateString('es-CO'), pStat };
       btn.style.display = 'block';
-    } catch(e) { out.textContent = "❌ Código inválido."; btn.style.display='none'; lastRef=null; }
+    } catch(e) { out.textContent = "❌ Código inválido o corrupto."; btn.style.display='none'; lastRef=null; }
   }
 
   async function copiarMensajeReferencia() {
     if(!lastRef) return;
     let noms = lastRef.items.map(i=>i.name).join(', '), est = lastRef.isVen ? 'ya se venció' : 'está vigente hasta';
-    let pMsg = lastRef.pStat==="1" ? "ya se encuentra pagado" : "está con el pago pendiente de validación";
-    let msg = `Hola. Tu servicio de ${noms} inició el ${lastRef.st} y ${est} el ${lastRef.end}. Actualmente tu estado es: ${pMsg}. ¿Deseas renovar o necesitas ayuda?`;
-    try{ await navigator.clipboard.writeText(msg); alert('Copiado'); }catch(e){}
+    let pMsg = lastRef.pStat==="1" ? "ya se encuentra pagado en sistema" : "está con el pago pendiente de validación en banco";
+    let msg = `Hola. Tu servicio de ${noms} inició el ${lastRef.st} y ${est} el ${lastRef.end}. Actualmente tu estado es: ${pMsg}. ¿Deseas renovar o necesitas ayuda con algo más?`;
+    try{ await navigator.clipboard.writeText(msg); alert('Mensaje copiado correctamente.'); }catch(e){}
   }
 
-  // OCR Imagen
+  /* OCR (Lector de Imagen de Facturas) */
   const da = document.getElementById('ref-drop-area'), fi = document.getElementById('ref-file-input');
   da.onclick = () => fi.click(); da.ondragover = e => { e.preventDefault(); da.classList.add('dragover'); }; da.ondragleave = () => da.classList.remove('dragover');
   da.ondrop = e => { e.preventDefault(); da.classList.remove('dragover'); if(e.dataTransfer.files[0]) procImg(e.dataTransfer.files[0]); };
@@ -478,19 +523,19 @@
     if(!f) return; document.getElementById('ref-decode-output').textContent = '⏳ Leyendo imagen OCR...';
     try {
       const w = await Tesseract.createWorker('eng'); const ret = await w.recognize(f); await w.terminate();
-      const m = ret.data.text.match(/REF-([A-Z0-9\-]+)/i); // Ahora permite guiones en la regex
+      const m = ret.data.text.match(/REF-([A-Z0-9\-]+)/i); // Reconoce tanto códigos nuevos (con guiones) como viejos (sin)
       if(m) { document.getElementById('ref-decode-input').value = m[1].toUpperCase(); document.getElementById('ref-decode-output').textContent='✅ Decodificando...'; setTimeout(decodificarReferencia,300); }
       else document.getElementById('ref-decode-output').textContent='❌ No se encontró código REF en la imagen.';
     } catch(e) { document.getElementById('ref-decode-output').textContent='❌ Error procesando imagen.'; }
   }
 
-  /* ================= EXPORTACIÓN FACTURAS ================= */
+  /* ================= EXPORTACIÓN DE FACTURAS (IMAGEN Y TEXTO) ================= */
   async function copiarFactura() {
     if(document.getElementById('total-display').textContent==='$0' && document.getElementById('admin-stamp').classList.contains('hidden')) return alert('Agrega servicios');
     const b = document.getElementById('copy-img-btn'), o = b.innerHTML; b.innerHTML = '⏳...';
     try {
       const c = await html2canvas(document.getElementById('capture-receipt'), {backgroundColor:'#15171c', scale:2});
-      c.toBlob(async blob => { try{ await navigator.clipboard.write([new ClipboardItem({[blob.type]:blob})]); b.innerHTML='✅'; setTimeout(()=>b.innerHTML=o,2000); }catch(e){b.innerHTML=o;} });
+      c.toBlob(async blob => { try{ await navigator.clipboard.write([new ClipboardItem({[blob.type]:blob})]); b.innerHTML='✅'; setTimeout(()=>b.innerHTML=o,2000); }catch(e){b.innerHTML=o; alert('Error al copiar. Puede que tu navegador no lo soporte.');} });
     } catch(e) { b.innerHTML=o; }
   }
 
@@ -511,7 +556,7 @@
     try{ await navigator.clipboard.writeText(msj); b.innerHTML='✅'; setTimeout(()=>b.innerHTML=o,2000); }catch(e){}
   }
 
-  /* ================= VARIOS (CLAVES Y FECHAS) ================= */
+  /* ================= GENERADOR CLAVES Y FECHAS NETFLIX ================= */
   document.getElementById('tv-platform').innerHTML = ["Netflix","Disney+","Max","Prime Video","Otro"].map(n=>`<option>${n}</option>`).join('');
   let lstCl=''; function generarClaveTV() {
     let p=''; const c='bcdfghjklmnprstvwxyz', v='aeiou';
@@ -534,7 +579,7 @@
     }
   }
 
-  /* Calculadora */
+  /* ================= CALCULADORA NUMÉRICA ================= */
   let cVal='0'; function addCalc(v) { if(cVal==='0'&&!['+','-','*','/'].includes(v))cVal=v; else cVal+=v; document.getElementById('calc-screen').innerText=cVal;}
   function clearCalc() { cVal='0'; document.getElementById('calc-screen').innerText=cVal;}
   function solveCalc() { try{ cVal=Function('"use strict";return ('+cVal+')')().toString(); }catch(e){cVal='Error';} document.getElementById('calc-screen').innerText=cVal;}
