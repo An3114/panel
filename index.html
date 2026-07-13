@@ -62,7 +62,7 @@
   .custom-input-group { display: flex; gap: 10px; margin-bottom: 10px; }
   .custom-input { flex: 1; background: var(--shell); border: 1px solid var(--shell-border); color: #fff; padding: 10px 14px; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.2s; }
   .custom-input:focus { border-color: var(--led); }
-  .custom-btn { background: var(--key); color: #e7e9e1; border: none; padding: 0 16px; border-radius: 8px; font-family: inherit; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+  .custom-btn { background: var(--key); color: #e7e9e1; border: none; padding: 0 16px; border-radius: 8px; font-family: inherit; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.2s;}
   .custom-btn.wide { width: 100%; padding: 12px; } .custom-btn.blue { background: var(--accent-blue); color: #06213b; }
   .radio-group { display: flex; flex-direction: column; gap: 8px; }
   .radio-label { display: flex; align-items: center; gap: 10px; color: #e7e9e1; font-size: 0.85rem; cursor: pointer; background: rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--shell-border); }
@@ -112,7 +112,7 @@
   .btn-group { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; }
   .action-btn { flex: 1; min-width: 100px; background: var(--led); color: var(--ink); border: none; padding: 14px 10px; border-radius: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
   .action-btn:hover { filter: brightness(1.1); } 
-  .action-btn.copied { background: #3498db !important; color: #fff !important; }
+  .action-btn.copied, .custom-btn.copied { background: #3498db !important; color: #fff !important; }
   .clear-btn { background: transparent; border: 1px solid var(--shell-border); color: #cfd3c9; }
 
   /* CALCULADORA Y FECHAS */
@@ -176,12 +176,12 @@
       <div id="tab-rapidas" class="tab-pane">
         <div class="tool-block">
           <div class="tool-title">👋 Saludo automático</div>
-          <button class="custom-btn wide" onclick="generarSaludo()">Generar y copiar saludo</button>
+          <button class="custom-btn wide" id="btn-saludo" onclick="generarSaludo()">Generar y copiar saludo</button>
           <div class="tool-output" id="saludo-output">—</div>
         </div>
         <div class="tool-block">
           <div class="tool-title">💲 Lista de precios</div>
-          <button class="custom-btn wide" onclick="generarListaPrecios()">Generar y copiar lista</button>
+          <button class="custom-btn wide" id="btn-lista" onclick="generarListaPrecios()">Generar y copiar lista</button>
           <div class="tool-output" id="lista-output">—</div>
         </div>
       </div>
@@ -423,12 +423,14 @@
       banner.classList.remove('hidden');
       const stat = invoiceMode === 'pagado' ? '1' : '0';
       const ref = generarCodigoRef(lines, 30, stat); // Generador nuevo (corto y único)
+      
+      // SE AÑADIÓ EL id="ref-code-display" QUE FALTABA
       if (invoiceMode === 'pagado') {
         banner.className = 'paid-banner pagado';
-        banner.innerHTML = `✅ Estado: PAGADO — ¡Gracias!<div class="ref-code-box">REF-${ref}</div>`;
+        banner.innerHTML = `✅ Estado: PAGADO — ¡Gracias!<div class="ref-code-box" id="ref-code-display">REF-${ref}</div>`;
       } else {
         banner.className = 'paid-banner validando';
-        banner.innerHTML = `⏳ Estado: VALIDANDO PAGO — Entregado<div class="ref-code-box">REF-${ref}</div>`;
+        banner.innerHTML = `⏳ Estado: VALIDANDO PAGO — Entregado<div class="ref-code-box" id="ref-code-display">REF-${ref}</div>`;
       }
     } else { banner.classList.add('hidden'); }
   }
@@ -562,9 +564,14 @@
     let saludo = hour < 12 ? "¡Buenos días!" : hour < 19 ? "¡Buenas tardes!" : "¡Buenas noches!";
     saludo += " ¿En qué te puedo ayudar hoy?";
     document.getElementById('saludo-output').textContent = saludo;
+    
     try { 
       await navigator.clipboard.writeText(saludo); 
-      document.getElementById('saludo-output').textContent += "\n\n✅ Copiado al portapapeles"; 
+      const btn = document.getElementById('btn-saludo');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ ¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('copied'); }, 2500);
     } catch(e){}
   }
 
@@ -576,9 +583,14 @@
     texto += "\n— $15.000 (30 días) —\n";
     SERVICES["15"].forEach(s => texto += `${s.name.replace(' 30 Días', '')} — $${s.p.toLocaleString('es-CO')}\n`);
     document.getElementById('lista-output').textContent = texto;
+    
     try { 
       await navigator.clipboard.writeText(texto); 
-      document.getElementById('lista-output').textContent += "\n\n✅ Copiado al portapapeles"; 
+      const btn = document.getElementById('btn-lista');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ ¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('copied'); }, 2500);
     } catch(e){}
   }
 
@@ -616,8 +628,15 @@
     lines.forEach(l=> msj+=`🔹 ${l.q}x ${l.n}\n`);
     msj += `━━━━━━━━━━━━━━━\n💵 *TOTAL:* ${t}\n${cNote}\n`;
     
-    if(invoiceMode==='pagado') msj += `\n✅ ¡Gracias por tu pago!\nCódigo: REF-${document.getElementById('ref-code-display').textContent.replace('REF-','')}`;
-    if(invoiceMode==='validando') msj += `\n⏳ Entregado. Pago en validación.\nCódigo: REF-${document.getElementById('ref-code-display').textContent.replace('REF-','')}`;
+    // CORRECCIÓN: Evitamos que el código se quiebre validando si existe la referencia HTML
+    if(invoiceMode==='pagado' || invoiceMode==='validando') {
+      const refElem = document.getElementById('ref-code-display');
+      if (refElem) {
+        let cleanRef = refElem.textContent.replace('REF-','');
+        if(invoiceMode==='pagado') msj += `\n✅ ¡Gracias por tu pago!\nCódigo: REF-${cleanRef}`;
+        if(invoiceMode==='validando') msj += `\n⏳ Entregado. Pago en validación.\nCódigo: REF-${cleanRef}`;
+      }
+    }
     
     try { 
       await navigator.clipboard.writeText(msj); 
@@ -651,16 +670,41 @@
     } catch(e) { alert('Error al copiar.'); } 
   }
 
+  // CORRECCIÓN: Cálculo de fechas completamente matemático para rellenar los "Días Restantes"
   function calcularFechas() {
     const s = document.getElementById('start-date').value.trim().match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
-    if(!s) return; let d=new Date(s[3]<100?+s[3]+2000:+s[3], s[2]-1, s[1]);
+    if(!s) return; 
+    
+    let year = parseInt(s[3]);
+    if(year < 100) year += 2000;
+    
+    let d = new Date(year, s[2]-1, s[1]);
     const net = document.getElementById('netflix-mode').checked;
-    document.getElementById('result-normal').classList.toggle('hidden', net); document.getElementById('result-netflix').classList.toggle('hidden', !net);
+    
+    document.getElementById('result-normal').classList.toggle('hidden', net); 
+    document.getElementById('result-netflix').classList.toggle('hidden', !net);
+    
+    let today = new Date();
+    today.setHours(0,0,0,0);
+
     if(net) {
-      let d2 = new Date(d); d2.setDate(d2.getDate()+15); let df = new Date(d); df.setDate(df.getDate()+33);
-      document.getElementById('fecha-pin2').textContent = d2.toLocaleDateString('es-CO'); document.getElementById('fecha-final').textContent = df.toLocaleDateString('es-CO');
+      let d2 = new Date(d); d2.setDate(d2.getDate()+15); 
+      let df = new Date(d); df.setDate(df.getDate()+33);
+      document.getElementById('fecha-pin2').textContent = d2.toLocaleDateString('es-CO'); 
+      document.getElementById('fecha-final').textContent = df.toLocaleDateString('es-CO');
+      
+      // Cálculo de los días para el PIN 2
+      let diffPin2 = Math.ceil((d2 - today) / (1000 * 60 * 60 * 24));
+      document.getElementById('dias-pin2').textContent = diffPin2 >= 0 ? diffPin2 + ' días' : 'Atrasado';
+      document.getElementById('dias-pin2').className = diffPin2 >= 0 ? 'value' : 'value warn';
     } else {
-      let df = new Date(d); df.setDate(df.getDate()+30); document.getElementById('fecha-corte').textContent = df.toLocaleDateString('es-CO');
+      let df = new Date(d); df.setDate(df.getDate()+30); 
+      document.getElementById('fecha-corte').textContent = df.toLocaleDateString('es-CO');
+      
+      // Cálculo de los días restantes
+      let diffNormal = Math.ceil((df - today) / (1000 * 60 * 60 * 24));
+      document.getElementById('dias-restantes').textContent = diffNormal >= 0 ? diffNormal + ' días' : 'Vencido';
+      document.getElementById('dias-restantes').className = diffNormal >= 0 ? 'value ok' : 'value warn';
     }
   }
 
