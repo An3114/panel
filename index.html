@@ -108,9 +108,11 @@
   .admin-stamp { margin-top: 16px; border: 2px solid var(--accent-red); color: var(--accent-red); font-weight: 700; font-size: 0.9rem; text-align: center; padding: 10px; border-radius: 4px; transform: rotate(-2deg); }
   .hidden { display: none !important; }
   
+  /* ESTILOS RESTAURADOS DE ANIMACIÓN PARA BOTONES */
   .btn-group { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; }
   .action-btn { flex: 1; min-width: 100px; background: var(--led); color: var(--ink); border: none; padding: 14px 10px; border-radius: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .action-btn:hover { filter: brightness(1.1); } .action-btn.copied { background: #3498db; color: #fff; }
+  .action-btn:hover { filter: brightness(1.1); } 
+  .action-btn.copied { background: #3498db !important; color: #fff !important; }
   .clear-btn { background: transparent; border: 1px solid var(--shell-border); color: #cfd3c9; }
 
   /* CALCULADORA Y FECHAS */
@@ -246,9 +248,26 @@
       </div>
 
       <div class="btn-group">
-        <button class="action-btn" id="copy-img-btn" onclick="copiarFactura()">📷 Imagen</button>
-        <button class="action-btn" id="copy-txt-btn" onclick="copiarTexto()">📝 Texto (SMS)</button>
-        <button class="action-btn clear-btn" onclick="limpiarTodo()">🧹 Limpiar</button>
+        <button class="action-btn" id="copy-img-btn" onclick="copiarFactura()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Imagen
+        </button>
+        <button class="action-btn" id="copy-txt-btn" onclick="copiarTexto()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Texto (SMS)
+        </button>
+        <button class="action-btn clear-btn" onclick="limpiarTodo()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+            <path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Limpiar
+        </button>
       </div>
     </section>
 
@@ -483,9 +502,6 @@
         let itemsStr = parts.length >= 4 ? parts[3] : parts[2];
         
         st = new Date(new Date(2024,0,1).getTime() + parseInt(startB36, 36) * 86400000);
-        
-        // CORRECCIÓN APLICADA AQUÍ: Ya no se suman los milisegundos a la fecha actual,
-        // se suma directamente desde la misma base del 1 de enero de 2024.
         end = new Date(new Date(2024,0,1).getTime() + parseInt(endB36, 36) * 86400000);
         
         if (itemsStr) {
@@ -512,7 +528,15 @@
     let noms = lastRef.items.map(i=>i.name).join(', '), est = lastRef.isVen ? 'ya se venció' : 'está vigente hasta';
     let pMsg = lastRef.pStat==="1" ? "ya se encuentra pagado en sistema" : "está con el pago pendiente de validación en banco";
     let msg = `Hola. Tu servicio de ${noms} inició el ${lastRef.st} y ${est} el ${lastRef.end}. Actualmente tu estado es: ${pMsg}. ¿Deseas renovar o necesitas ayuda con algo más?`;
-    try{ await navigator.clipboard.writeText(msg); alert('Mensaje copiado correctamente.'); }catch(e){}
+    
+    try { 
+      await navigator.clipboard.writeText(msg); 
+      const btn = document.getElementById('copy-ref-msg-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ ¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('copied'); }, 2500);
+    } catch(e) { alert('Error al copiar.'); }
   }
 
   /* OCR (Lector de Imagen de Facturas) */
@@ -532,19 +556,57 @@
     } catch(e) { document.getElementById('ref-decode-output').textContent='❌ Error procesando imagen.'; }
   }
 
-  /* ================= EXPORTACIÓN DE FACTURAS (IMAGEN Y TEXTO) ================= */
+  /* ================= HERRAMIENTAS RÁPIDAS (SALUDOS Y LISTAS CON FEEDBACK) ================= */
+  async function generarSaludo() {
+    const hour = new Date().getHours();
+    let saludo = hour < 12 ? "¡Buenos días!" : hour < 19 ? "¡Buenas tardes!" : "¡Buenas noches!";
+    saludo += " ¿En qué te puedo ayudar hoy?";
+    document.getElementById('saludo-output').textContent = saludo;
+    try { 
+      await navigator.clipboard.writeText(saludo); 
+      document.getElementById('saludo-output').textContent += "\n\n✅ Copiado al portapapeles"; 
+    } catch(e){}
+  }
+
+  async function generarListaPrecios() {
+    let texto = "📋 LISTA DE PRECIOS — TERMINAL STREAMING\n\n— $10.000 (30 días) —\n";
+    SERVICES["10"].forEach(s => texto += `${s.name.replace(' 30 Días', '')} — $${s.p.toLocaleString('es-CO')}\n`);
+    texto += "\n— $11.000 (30 días) —\n";
+    SERVICES["11"].forEach(s => texto += `${s.name.replace(' 30 Días', '')} — $${s.p.toLocaleString('es-CO')}\n`);
+    texto += "\n— $15.000 (30 días) —\n";
+    SERVICES["15"].forEach(s => texto += `${s.name.replace(' 30 Días', '')} — $${s.p.toLocaleString('es-CO')}\n`);
+    document.getElementById('lista-output').textContent = texto;
+    try { 
+      await navigator.clipboard.writeText(texto); 
+      document.getElementById('lista-output').textContent += "\n\n✅ Copiado al portapapeles"; 
+    } catch(e){}
+  }
+
+  /* ================= EXPORTACIÓN DE FACTURAS (IMAGEN Y TEXTO) CON ANIMACIONES ================= */
   async function copiarFactura() {
     if(document.getElementById('total-display').textContent==='$0' && document.getElementById('admin-stamp').classList.contains('hidden')) return alert('Agrega servicios');
-    const b = document.getElementById('copy-img-btn'), o = b.innerHTML; b.innerHTML = '⏳...';
+    const btn = document.getElementById('copy-img-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Generando...';
     try {
       const c = await html2canvas(document.getElementById('capture-receipt'), {backgroundColor:'#15171c', scale:2});
-      c.toBlob(async blob => { try{ await navigator.clipboard.write([new ClipboardItem({[blob.type]:blob})]); b.innerHTML='✅'; setTimeout(()=>b.innerHTML=o,2000); }catch(e){b.innerHTML=o; alert('Error al copiar. Puede que tu navegador no lo soporte.');} });
-    } catch(e) { b.innerHTML=o; }
+      c.toBlob(async blob => { 
+        try { 
+          await navigator.clipboard.write([new ClipboardItem({[blob.type]:blob})]); 
+          btn.innerHTML = '✅ ¡Copiado!';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('copied'); }, 2500);
+        } catch(e) { 
+          btn.innerHTML = originalText; 
+          alert('Error al copiar. Puede que tu navegador no lo soporte directamente.');
+        } 
+      });
+    } catch(e) { btn.innerHTML = originalText; }
   }
 
   async function copiarTexto() {
-    if(document.getElementById('total-display').textContent==='$0' && document.getElementById('admin-stamp').classList.contains('hidden')) return;
-    const b=document.getElementById('copy-txt-btn'), o=b.innerHTML, t=document.getElementById('total-display').textContent;
+    if(document.getElementById('total-display').textContent==='$0' && document.getElementById('admin-stamp').classList.contains('hidden')) return alert('Agrega servicios');
+    const t=document.getElementById('total-display').textContent;
     let lines=[], cNote = !document.getElementById('admin-stamp').classList.contains('hidden') ? "⚠ PRECIO AUTORIZADO" : "";
     document.querySelectorAll('.qty').forEach(s=>{ let q=parseInt(s.innerText); if(q>0) lines.push({q, n:s.getAttribute('data-name')}); });
     customPlatforms.forEach(p=>lines.push({q:p.qty, n:p.name}));
@@ -556,7 +618,15 @@
     
     if(invoiceMode==='pagado') msj += `\n✅ ¡Gracias por tu pago!\nCódigo: REF-${document.getElementById('ref-code-display').textContent.replace('REF-','')}`;
     if(invoiceMode==='validando') msj += `\n⏳ Entregado. Pago en validación.\nCódigo: REF-${document.getElementById('ref-code-display').textContent.replace('REF-','')}`;
-    try{ await navigator.clipboard.writeText(msj); b.innerHTML='✅'; setTimeout(()=>b.innerHTML=o,2000); }catch(e){}
+    
+    try { 
+      await navigator.clipboard.writeText(msj); 
+      const btn = document.getElementById('copy-txt-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ ¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('copied'); }, 2500);
+    } catch(e) { alert('Error al copiar.'); }
   }
 
   /* ================= GENERADOR CLAVES Y FECHAS NETFLIX ================= */
@@ -565,9 +635,21 @@
     let p=''; const c='bcdfghjklmnprstvwxyz', v='aeiou';
     for(let i=0;i<4;i++) p+=c[Math.floor(Math.random()*c.length)]+v[Math.floor(Math.random()*v.length)];
     p += Math.floor(Math.random()*90+10); lstCl=p;
-    document.getElementById('clave-output').textContent=`Clave: ${p}`; document.getElementById('copy-clave-btn').style.display='block';
+    document.getElementById('clave-output').textContent=`Clave: ${p}`; 
+    document.getElementById('copy-clave-btn').style.display='block';
   }
-  async function copiarClave() { try{ await navigator.clipboard.writeText(lstCl); }catch(e){} }
+  
+  async function copiarClave() { 
+    if(!lstCl) return;
+    try { 
+      await navigator.clipboard.writeText(lstCl); 
+      const btn = document.getElementById('copy-clave-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ ¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = originalText; btn.classList.remove('copied'); }, 2500);
+    } catch(e) { alert('Error al copiar.'); } 
+  }
 
   function calcularFechas() {
     const s = document.getElementById('start-date').value.trim().match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
